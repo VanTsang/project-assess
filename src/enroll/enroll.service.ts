@@ -7,6 +7,7 @@ import { UserModule } from 'src/user/user.module';
 import { CreateEnrollDto } from './dto/create-enroll.dto';
 import { JwtPayload } from './jwt-payload.interface';
 import { access } from 'fs';
+import { LoginDto } from './dto/login.dto';
 @Injectable()
 export class EnrollService {
   constructor(
@@ -23,12 +24,12 @@ export class EnrollService {
     return this.userService.create({username, password: hashedPassword,email})
   }
   //用户登录
-  async login(email: string, password: string) {
-    const user = await this.userService.findByEmail(email)
+  async login(body: LoginDto) {
+    const user = await this.userService.findByEmail(body.email)
     if (!user) {
       throw new Error('用户不存在')
     }
-    const isMatch = await bcrypt.compare(password, user.password)
+    const isMatch = await bcrypt.compare(body.password, user.password)
     if (!isMatch){
       throw new Error('密码错误')
     }

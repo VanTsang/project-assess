@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { EnrollService } from './enroll.service';
 import { CreateEnrollDto } from './dto/create-enroll.dto';
+import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
 
 
 @Controller('enroll')
@@ -9,15 +11,16 @@ export class EnrollController {
 
   //注册接口
   @Post('register')
-  async register(@Body() createEnrollDto: CreateEnrollDto) {
+  async register(@Body() createEnrollDto: RegisterDto) {
     const {username, password, email} = createEnrollDto
     return this.enrollService.register(createEnrollDto)
   }
 
   //登录接口
   @Post('login')
-  async login(@Body() body: {email: string, password: string}){
-    return this.enrollService.login(body.email, body.password)
+  async login(@Body() body: LoginDto){
+    const {email, password} = body
+    return this.enrollService.login(body)
   }
 
 }
