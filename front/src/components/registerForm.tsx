@@ -13,7 +13,7 @@ const RegisterForm = () => {
         try {
             await register(value)//调用注册接口
             message.success('注册成功，返回登录页面')
-            navigate('/login')
+            navigate('/enroll/login')
         } catch (error) {
             message.error('注册失败，请检查格式是否正确')
         } finally {
