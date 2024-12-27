@@ -1,7 +1,7 @@
 import React, { useEffect } from'react';
 import {Button, Space, Typography} from 'antd';
 import {useSelector} from'react-redux';//读取redux store中的数据
-import {RootState} from '../store'
+import {RootState, store} from '../store'
 import { useNavigate } from 'react-router-dom';
 
 const {Title, Text} = Typography
@@ -28,9 +28,6 @@ const MainPage = () => {
     }
 
     useEffect(() => {
-        //获取用户登录状态
-    
-       
         
         //判断用户是否登录，未登录跳转到登录页面
         if (!isLogin) {
@@ -46,7 +43,7 @@ const MainPage = () => {
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <Title level={1}>电商商品管理系统欢迎您</Title>
-            <Text>用户名: {isLogin.username}</Text>
+            <Text>用户: {isLogin.email}</Text>
 
             <Space direction='vertical' size='middle' style={{ display: 'flex', margin: '20px'}}>
                 <Button type='primary' onClick={goProductPage}>

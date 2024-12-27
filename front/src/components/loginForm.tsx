@@ -8,7 +8,7 @@ import { setUser } from "../store/enrollSlice";
 const LoginForm = () => {
     const [loading, setLoading] = useState(false)//控制加载状态
     const navigate = useNavigate()
-    const dispath = useDispatch()
+    const dispatch = useDispatch()
     //表单提交
     const handleLogin = async (value: any) => {
         setLoading(true)
@@ -16,7 +16,13 @@ const LoginForm = () => {
             const res = await login(value)//调用登录接口
             console.log(res)
             message.success('登录成功')
-            dispath(setUser(res.access_token))
+            //从表单获取用户username和email
+            const userData = {
+                username: value.username,
+                email: value.email,
+                access_token: res.access_token
+            }
+            dispatch(setUser(userData))
             navigate('/main')//跳转到首页
         } catch (error) {
             message.error('登录失败，请检查邮箱或密码是否正确')

@@ -1,8 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+//定义user类型
+interface User {
+    username: string
+    email: string
+    access_token: string
+}
+
 //定义EnrollState接口，表示认证状态
 interface EnrollState {
-    user: {username: string, email: string} | null //用户信息，包含用户名和邮箱，或为null
+    user: User | null //用户信息，包含用户名、邮箱和access_token，或为null
 
 }
 //定义初始状态
@@ -15,7 +22,7 @@ const enrollSlice = createSlice({
     name: 'enroll',
     initialState,
     reducers: {
-        setUser(state, action: PayloadAction<{ username: string, email: string}>) {
+        setUser(state, action: PayloadAction<User>) {
             state.user = action.payload //更新user为传入的用户信息
         },
         //用户登出
