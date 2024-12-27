@@ -2,18 +2,22 @@ import React, { useState } from "react";
 import {Form, Button, Input, message} from "antd";
 import {login} from '../apis/enroll'
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/enrollSlice";
 
 const LoginForm = () => {
     const [loading, setLoading] = useState(false)//控制加载状态
     const navigate = useNavigate()
-
+    const dispath = useDispatch()
     //表单提交
     const handleLogin = async (value: any) => {
         setLoading(true)
         try {
-            await login(value)//调用登录接口
+            const res = await login(value)//调用登录接口
+            console.log(res)
             message.success('登录成功')
-            navigate('/')//跳转到首页
+            dispath(setUser(res.access_token))
+            navigate('/main')//跳转到首页
         } catch (error) {
             message.error('登录失败，请检查邮箱或密码是否正确')
         } finally {

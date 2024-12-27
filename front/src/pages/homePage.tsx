@@ -19,7 +19,7 @@ const HomePage = () => {
     return (
         <div style={{textAlign: 'center', marginTop: '50px'}}>
             <h1>电商商品管理系统欢迎您</h1>
-            <Space direction='vertical' size='middle' style={{display: 'flex'}}>
+            <Space direction='horizontal' size='middle' style={{display: 'flex', justifyContent: 'center'}}>
                 <Button type='primary' onClick={goLogin}>
                     登录
                 </Button>
