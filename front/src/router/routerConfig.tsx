@@ -13,7 +13,7 @@ const RouterConfig = () => {
         <Route path="/main" element={<MainPage />} />
         <Route path="/enroll/register" element={<RegisterPage />} />
         <Route path="/enroll/login" element={<LoginPage />} /> 
-        <Route path="/main/product" element={<ProductPage />} />
+        <Route path="/main/products" element={<ProductPage />} />
     </Routes>)
 }
 

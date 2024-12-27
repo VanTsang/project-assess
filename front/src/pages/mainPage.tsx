@@ -13,12 +13,12 @@ const MainPage = () => {
 
     //登录后跳转到商品管理页面
     const goProductPage = () => {
-        navigate('/main/product')
+        navigate('/main/products')
     }
 
     //登录后跳转到商品分类管理页面
     const goCategoryPage = () => {
-        navigate('/main/category')
+        navigate('/main/categories')
     }
 
     //退出登录

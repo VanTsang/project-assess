@@ -3,7 +3,6 @@ import {Table, Button, Input, Space, message, Form, Select, InputNumber, Modal} 
 import { createProduct, readProduct, updateProduct, deleteProduct } from '../apis/product';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../store/enrollSlice';
 
 const ProductPage = () => {
     const navigate = useNavigate()
@@ -15,14 +14,20 @@ const ProductPage = () => {
     const [isEdit, setIsEdit] = useState(false)
     const [currentProduct, setCurrentProduct] = useState<any>(null)
     const [form] = Form.useForm()
+    
+    
+
 
     //获取商品列表
     const getProduct = async () => {
         setLoading(true)
         try {
             const res = await readProduct()
-            setProduct(res.data)
+            
+            setProduct(res)
         } catch (error) {
+            console.error("获取商品列表失败", error);
+            
             message.error('获取商品列表失败')
         } finally {
             setLoading(false)
@@ -31,14 +36,24 @@ const ProductPage = () => {
     }
 
     //新增商品
-    const createProduct = async (value: any) => {
+    const createProductHandler = async (value: any) => {
         setLoading(true)
+        const productData = {
+            name: value.name,
+            price: value.price,
+            description: value.description,
+            inventory: value.inventory,
+            categoryId: 2,
+            userId: 1
+        }
         try {
-            await createProduct(value)
+            await createProduct(productData)
             message.success('新增商品成功')
             getProduct()
             setModalVisible(false)
         } catch (error) {
+            console.error("新增商品失败", error);
+            
             message.error('新增商品失败')
         } finally {
             setLoading(false)
@@ -47,10 +62,18 @@ const ProductPage = () => {
     }
 
     //编辑商品
-    const updateProduct = async (value: any) => {
+    const updateProductHandler = async (value: any) => {
         setLoading(true)
+        const productData = {
+            name: value.name,
+            price: value.price,
+            description: value.description,
+            inventory: value.inventory,
+            categoryId: 2,
+            userId: 1
+        }
         try {
-            await updateProduct(value)
+            await updateProduct(currentProduct.id,productData)
             message.success('编辑商品成功')
             getProduct()
             setModalVisible(false)
@@ -62,7 +85,7 @@ const ProductPage = () => {
         
     }
     //删除商品
-    const deleteProduct = async (id: number) => {
+    const deleteProductHandler = async (id: number) => {
         setLoading(true)
         try {
             await deleteProduct(id)
@@ -82,6 +105,7 @@ const ProductPage = () => {
         setCurrentProduct(null)
         setModalVisible(true)
     }
+
     //编辑商品弹窗
     const EditForm = (product: any) => {
         setIsEdit(true)
@@ -91,28 +115,32 @@ const ProductPage = () => {
             price: product.price,
             description: product.description,
             inventory: product.inventory,
-            categoryId: product.categoryId
+            categoryId: product.categoryId,
+            userId: product.userId
         })
         setModalVisible(true)
     }
 
     useEffect(() => {
         getProduct()
-        getCategory()
+        //getCategory()
     },[])//空依赖数组，只在组件挂载时执行一次
 
+    console.log(product)
     //表格列
     const columns = [
         {title: '商品名称', dataIndex: 'name', key: 'name'},
         {title: '价格', dataIndex: 'price', key: 'price'},
         {title: '商品描述', dataIndex: 'description', key: 'description'},
         {title: '库存', dataIndex: 'inventory', key: 'inventory'},
+        {title: '创建时间', dataIndex: 'createdAt', key: 'createdAt'},
+        {title: '更新时间', dataIndex: 'updatedAt', key: 'updatedAt'},
         {title: '操作',
             key: 'action',
             render: (_: any, record: any) => (
                 <Space size='middle'>
                     <Button onClick={() => EditForm(record)}>编辑</Button>
-                    <Button danger onClick={() => deleteProduct(record.id)}>删除</Button>
+                    <Button danger onClick={() => deleteProductHandler(record.id)}>删除</Button>
                 </Space>
             )
         }
@@ -132,13 +160,13 @@ const ProductPage = () => {
 
                     <Modal
                         open={modalVisible}
-                        title={isEdit ? '新增商品' : '编辑商品'}
+                        title={isEdit ? '编辑商品' : '新增商品'}
                         onCancel={() => setModalVisible(false)}
                         footer={null}
                         >
                         <Form
                             form={form}
-                            onFinish={isEdit ? createProduct : updateProduct}
+                            onFinish={isEdit ? updateProductHandler : createProductHandler}
                             initialValues={{
                                 name: '',
                                 price: 0,
@@ -165,9 +193,10 @@ const ProductPage = () => {
                                 </Form.Item>
                                 <Form.Item name='categoryId' label='分类' rules={[{ required: true, message: '请选择商品分类' }]}
                                 >
-                                    <Select>
+                                    <Input />
+                                    {/*<Select>
                                         <Select.Option key={category.id} value={category.id}>{category.name}</Select.Option>
-                                    </Select>
+                                    </Select>*/}
                                 </Form.Item>
                                 <Form.Item>
                                     <Button type='primary' htmlType='submit' loading={loading}>

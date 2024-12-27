@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://loaclhost:8080'
+const API_URL = 'http://localhost:8080'
 
 export const createProduct = async (data: {name: string, price: number, description: string, inventory: number, userId: number, categoryId: number}) => {
     //将data对象转换为json格式
@@ -21,7 +21,7 @@ export const readProduct = async () => {
 export const updateProduct = async (id: number, data: {name: string, price: number, description: string, inventory: number, userId: number, categoryId: number}) => {
     //将data对象转换为json格式
     const jsonData = JSON.stringify(data)
-    const response = await axios.put(`${API_URL}/products/${id}`, jsonData, {
+    const response = await axios.patch(`${API_URL}/products/${id}`, jsonData, {
         headers: {
             'Content-Type': 'application/json'
         }
