@@ -29,9 +29,9 @@ const MainPage = () => {
 
     useEffect(() => {
         
-        //判断用户是否登录，未登录跳转到登录页面
+        //判断用户是否登录，未登录跳转到登录注册页面
         if (!isLogin) {
-            navigate('/enroll/login')
+            navigate('/')
         }
     },[isLogin, navigate])
     console.log(isLogin);
@@ -41,17 +41,12 @@ const MainPage = () => {
     }
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <div style={{ textAlign: 'center', marginTop: '50px'}}>
             <Title level={1}>电商商品管理系统欢迎您</Title>
             <Text>用户: {isLogin.email}</Text>
 
             <Space direction='vertical' size='middle' style={{ display: 'flex', margin: '20px'}}>
-                <Button type='primary' onClick={goProductPage}>
-                    商品管理
-                </Button>
-                <Button type='default' onClick={goCategoryPage}>
-                    商品分类管理
-                </Button>
+                
                 <Button type='link' onClick={logout}>
                     退出登录
                 </Button>

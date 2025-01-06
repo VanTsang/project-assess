@@ -3,6 +3,7 @@ import {Table, Button, Input, Space, message, Form, Select, InputNumber, Modal} 
 import { createProduct, readProduct, updateProduct, deleteProduct } from '../apis/product';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { getCategory, Category } from '../apis/category';  // 导入getCategory函数
 
 const ProductPage = () => {
     const navigate = useNavigate()
@@ -10,6 +11,7 @@ const ProductPage = () => {
 
     const [product, setProduct] = useState([])
     const [loading, setLoading] = useState(false)
+    const [categories, setCategories] = useState<any[]>([])
     const [modalVisible, setModalVisible] = useState(false)
     const [isEdit, setIsEdit] = useState(false)
     const [currentProduct, setCurrentProduct] = useState<any>(null)
@@ -35,6 +37,20 @@ const ProductPage = () => {
         
     }
 
+        // 获取商品分类列表
+        const getCategories = async () => {
+            setLoading(true);
+            try {
+                const res = await getCategory();  // 调用getCategory函数
+                setCategories(res);  // 更新商品分类数据
+            } catch (error) {
+                console.error('获取商品分类列表失败', error);
+                message.error('获取商品分类列表失败');
+            } finally {
+                setLoading(false);
+            }
+        };
+
     //新增商品
     const createProductHandler = async (value: any) => {
         setLoading(true)
@@ -43,7 +59,7 @@ const ProductPage = () => {
             price: value.price,
             description: value.description,
             inventory: value.inventory,
-            categoryId: 2,
+            categoryId: value.categoryId,  // 选中的商品分类ID
             userId: 1
         }
         try {
@@ -69,7 +85,7 @@ const ProductPage = () => {
             price: value.price,
             description: value.description,
             inventory: value.inventory,
-            categoryId: 2,
+            categoryId: value.categoryId,  // 选中的商品分类ID
             userId: 1
         }
         try {
@@ -122,19 +138,37 @@ const ProductPage = () => {
     }
 
     useEffect(() => {
-        getProduct()
-        //getCategory()
+        const fetchData = async () => {
+            setLoading(true)
+            try {
+                await getProduct()
+                const categoriesData = await getCategory()
+                setCategories(categoriesData)
+            } catch (error) {
+                console.error("获取商品列表失败", error);
+                message.error('获取商品列表失败')
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchData()//调用异步函数
+        // getProduct()
+        // const categories =getCategory()
+        // setCategories(categories)
     },[])//空依赖数组，只在组件挂载时执行一次
 
     console.log(product)
     //表格列
     const columns = [
+        {title: '商品id', dataIndex: 'id', key: 'id'},
         {title: '商品名称', dataIndex: 'name', key: 'name'},
         {title: '价格', dataIndex: 'price', key: 'price'},
+        {title: '分类', dataIndex: 'categoryId', key: 'categoryId'},
         {title: '商品描述', dataIndex: 'description', key: 'description'},
         {title: '库存', dataIndex: 'inventory', key: 'inventory'},
         {title: '创建时间', dataIndex: 'createdAt', key: 'createdAt'},
         {title: '更新时间', dataIndex: 'updatedAt', key: 'updatedAt'},
+        {title: '操作人', dataIndex: 'userId', key: 'userId'},
         {title: '操作',
             key: 'action',
             render: (_: any, record: any) => (
@@ -193,10 +227,13 @@ const ProductPage = () => {
                                 </Form.Item>
                                 <Form.Item name='categoryId' label='分类' rules={[{ required: true, message: '请选择商品分类' }]}
                                 >
-                                    <Input />
-                                    {/*<Select>
-                                        <Select.Option key={category.id} value={category.id}>{category.name}</Select.Option>
-                                    </Select>*/}
+                                    {/* <Input /> */}
+                                    <Select>
+                                    {categories.length === 0 ? (
+                                   <Select.Option value={-1}>暂无分类数据</Select.Option>
+                                   ) : (categories.map((category) => (
+                                        <Select.Option key={category.id} value={category.id}>{category.name}</Select.Option>)))}
+                                    </Select>
                                 </Form.Item>
                                 <Form.Item>
                                     <Button type='primary' htmlType='submit' loading={loading}>

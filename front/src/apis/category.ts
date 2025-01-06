@@ -30,3 +30,24 @@ export const deleteCategory = async (id: number) => {
     const response = await axios.delete(`${API_URL}/categories/${id}`)
     return response.data;
 }
+
+// 定义商品分类的类型
+export interface Category {
+    id: number;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+// 获取商品分类
+export const getCategory = async (): Promise<Category[]> => {
+    try {
+        const response = await axios.get(`${API_URL}/categories`)
+        console.log('获取商品分类成功', response.data)
+        
+        return response.data;  // 返回分类数据
+    } catch (error) {
+        console.error('获取商品分类失败', error);
+        throw new Error('获取商品分类失败');
+    }
+};
