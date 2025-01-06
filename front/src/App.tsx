@@ -3,6 +3,7 @@ import { BrowserRouter as Router} from'react-router-dom'
 import RouterConfig from './router/routerConfig'
 import { Provider } from'react-redux'
 import { store } from './store'
+import './index.css'
 function App() {
   
 

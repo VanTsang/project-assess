@@ -26,11 +26,11 @@ const enrollSlice = createSlice({
             state.user = action.payload //更新user为传入的用户信息
         },
         //用户登出
-        logout(state) {
+        clearUser(state) {
             state.user = null //清空用户信息
         }
     }
 
 })
-export const { setUser, logout } = enrollSlice.actions
+export const { setUser, clearUser } = enrollSlice.actions
 export default enrollSlice.reducer

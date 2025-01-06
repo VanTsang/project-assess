@@ -1,30 +1,24 @@
 import React, { useEffect } from'react';
 import {Button, Space, Typography} from 'antd';
-import {useSelector} from'react-redux';//读取redux store中的数据
+import {useDispatch, useSelector} from'react-redux';//读取redux store中的数据
 import {RootState, store} from '../store'
 import { useNavigate } from 'react-router-dom';
+import { clearUser, setUser } from '../store/enrollSlice';
 
 const {Title, Text} = Typography
 
 const MainPage = () => {
     const navigate = useNavigate();
-
+    const dispatch = useDispatch()//清除用户信息
     const isLogin = useSelector((state: RootState) => state.enroll.user)
 
-    //登录后跳转到商品管理页面
-    const goProductPage = () => {
-        navigate('/main/products')
-    }
-
-    //登录后跳转到商品分类管理页面
-    const goCategoryPage = () => {
-        navigate('/main/categories')
-    }
+    
 
     //退出登录
     const logout = () => {
         //清除用户信息，使用redux
-        navigate('/enroll/login')
+        dispatch(clearUser())
+        navigate('/')
     }
 
     useEffect(() => {
@@ -41,7 +35,7 @@ const MainPage = () => {
     }
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px'}}>
+        <div className="background" style={{ textAlign: 'center', marginTop: '50px'}}>
             <Title level={1}>电商商品管理系统欢迎您</Title>
             <Text>用户: {isLogin.email}</Text>
 

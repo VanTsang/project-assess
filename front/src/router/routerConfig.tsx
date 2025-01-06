@@ -7,6 +7,8 @@ import HomePage from "../pages/homePage";
 import MainPage from "../pages/mainPage";
 import ProductPage from "../pages/productPage";
 import CategoryPage from "../pages/categoryPage";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const { Content, Sider } = Layout;
 
@@ -15,6 +17,9 @@ const RouterConfig = () => {
     const [collapsed, setCollapsed] = useState(false);
    //  获取当前路径
    const location = useLocation();
+
+   //获取当前用户是否登录
+   const isLogin = useSelector((state: RootState) => state.enroll.user)
   
    useEffect(() => {
        // 判断当前路由是否包含子路由（即判断是否是 /main 下的路径）
@@ -27,9 +32,9 @@ const RouterConfig = () => {
     return (
       
 
-      <Layout style={{ minHeight: "100vh" }}>
+      <Layout style={{ minHeight: "100vh",padding:0 }}>
         
-        {collapsed&&(
+        {isLogin && collapsed&&(
         <Sider width={200} className="site-layout-background">
           <Menu
             mode="inline"
@@ -52,16 +57,16 @@ const RouterConfig = () => {
 
         
 
-        <Layout style={{ padding: "0 24px 24px" }}>
+        <Layout style={{ padding: 0 }}>
           <Content
             style={{
-              padding: 24,
+              padding: 0,
               margin: 0,
               minHeight: 280,
             }}
           >
         <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage />}  />
         <Route path="/main" element={<MainPage />} />
         <Route path="/enroll/register" element={<RegisterPage />} />
         <Route path="/enroll/login" element={<LoginPage />} /> 

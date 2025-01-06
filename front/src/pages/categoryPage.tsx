@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { createCategory, readCategory, updateCategory, deleteCategory } from '../apis/category';
 
 
+
 const CategoryPage = () => {
     const navigate = useNavigate();
     
@@ -14,7 +15,7 @@ const CategoryPage = () => {
     const [currentCategory, setCurrentCategory] = useState<any>(null);
     const [form] = Form.useForm();
 
-        //获取商品列表
+        //获取商品分类
             const getCategory = async () => {
                 setLoading(true)
                 try {
@@ -30,6 +31,9 @@ const CategoryPage = () => {
                 }
                 
             }
+
+        
+        
         
     
         //新增商品分类
@@ -111,6 +115,8 @@ const CategoryPage = () => {
             //getCategory()
         },[])//空依赖数组，只在组件挂载时执行一次
 
+        
+
             //表格列
             const columns = [
                 {title: '商品分类名称', dataIndex: 'name', key: 'name'},
@@ -128,7 +134,7 @@ const CategoryPage = () => {
                 }
             ]
             return (
-                <div>
+                <div className="background">
                     <Button type='primary' onClick={CreateForm} style={{marginBottom: 16}}>
                         新增商品分类
                     </Button>

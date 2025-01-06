@@ -17,6 +17,8 @@ const ProductPage = () => {
     const [currentProduct, setCurrentProduct] = useState<any>(null)
     const [form] = Form.useForm()
     
+    const [searchName, setSearchName] = useState('')
+    const [selectedCategory, setSelectedCategory] = useState<number | undefined>(undefined)
     
 
 
@@ -50,6 +52,36 @@ const ProductPage = () => {
                 setLoading(false);
             }
         };
+
+
+
+
+    //搜索商品
+    const handleSearch = async () => {
+        setLoading(true)
+        try {
+            const filteredProducts = await readProduct()
+            const filtered = filteredProducts.filter((product: any) => 
+                (product.name.includes(searchName)) && 
+                (selectedCategory ? product.categoryId === selectedCategory : true)
+            )
+            setProduct(filtered)
+        } catch (error) {
+            console.error("搜索商品失败", error);
+            
+            message.error('搜索商品失败')
+        } finally {
+            setLoading(false)
+        }
+        
+    }
+
+    //清除搜索
+    const clearSearch = () => {
+        setSearchName('')
+        setSelectedCategory(undefined)
+        getProduct()
+    }
 
     //新增商品
     const createProductHandler = async (value: any) => {
@@ -180,7 +212,29 @@ const ProductPage = () => {
         }
     ]
         return (
-            <div>
+            <div className="background">
+
+                <Space style={{ marginBottom: 16}}>
+                    <Input
+                        placeholder='请输入商品名称'
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
+                        style={{ width: 200 }}
+                        />
+                    <Select
+                        placeholder='请选择分类'
+                        value={selectedCategory}
+                        onChange={(value) => setSelectedCategory(value)}
+                        style={{ width: 200 }}
+                        >
+                            <Select.Option value={undefined}>全部</Select.Option>
+                            {categories.map((category) => (
+                                <Select.Option key={category.id} value={category.id}>{category.name}</Select.Option>
+                            ))}
+                        </Select>
+                        <Button type='primary' onClick={handleSearch}>搜索</Button>
+                        <Button  onClick={clearSearch}>清除</Button>
+                </Space>
                 <Button type='primary' onClick={CreateForm} style={{marginBottom: 16}}>
                     新增商品
                 </Button>
