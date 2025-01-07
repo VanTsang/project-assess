@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from'react';
-import {Table,Button,Space,message,Input,Form,InputNumber,Modal} from 'antd';
+import {Table,Button,Space,message,Input,Form,InputNumber,Modal,Select} from 'antd';
 import { useNavigate } from "react-router-dom";
-import { createCategory, readCategory, updateCategory, deleteCategory } from '../apis/category';
+import { createCategory, readCategory, updateCategory, deleteCategory, readCategoryProducts } from '../apis/category';
 
 
 
@@ -77,8 +77,28 @@ const CategoryPage = () => {
             }
             
         }
+
+        const checkCategoryHasProduct = async (categoryId: number) => {
+            try {
+                //调用API，检查分类下是否有商品
+                const res = await readCategoryProducts(categoryId)
+                console.log("检查分类商品结果",res.products);
+                
+                return res.products.length > 0 ? res.products.length > 0 :undefined//如果长度大于0，说明有商品
+            } catch (error) {
+                console.error("检查分类商品失败", error);
+                
+                message.error('检查分类商品失败')
+                return false
+            }
+        }
         //删除商品分类
         const deleteCategoryHandler = async (id: number) => {
+            const hasProduct = await checkCategoryHasProduct(id)//检查分类下是否有商品
+            if (hasProduct) {
+                message.error('该分类下有商品，不能删除!')
+                return
+            }
             Modal.confirm({
             title: '确认删除',
             content: '您确认要删除该分类吗？',
@@ -129,7 +149,10 @@ const CategoryPage = () => {
             const columns = [
                 {title: '商品分类名称', dataIndex: 'name', key: 'name'},
                 {title: '商品分类id', dataIndex: 'id', key: 'id'},
-                {title: '商品分类父id', dataIndex: 'parentId', key: 'parentId'},
+                {title: '商品父类', dataIndex: 'parentId', key: 'parentId',render: (text) => {
+                                const category = categories.find((item) => item.id === text); // 查找匹配的分类
+                                return category ? category.name : "无"; // 如果找到匹配的项，则返回名称，否则返回原始值
+                              },},
                 {title: '创建时间', dataIndex: 'createdAt', key: 'createdAt',sorter: (a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),render: (text: any) => new Date(text).toLocaleString()},//格式化时间
                 {title: '更新时间', dataIndex: 'updatedAt', key: 'updatedAt',sorter: (a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),render: (text: any) => new Date(text).toLocaleString()},//格式化时间
                 {title: '操作',
@@ -174,9 +197,15 @@ const CategoryPage = () => {
                                     >
                                         <Input />
                                     </Form.Item>
-                                    <Form.Item name='parentId' label='商品分类父id' rules={[{  message: '请输入商品分类父id' }]}
+                                    <Form.Item name='parentId' label='父类' 
                                     >
-                                        <InputNumber />
+                                        <Select>
+                                            <Select.Option value={null}>无</Select.Option>
+                                    {categories.length === 0 ? (
+                                   <Select.Option value={-1}>暂无分类数据</Select.Option>
+                                   ) : (categories.map((category) => (
+                                        <Select.Option key={category.id} value={category.id}>{category.name}</Select.Option>)))}
+                                    </Select>
                                     </Form.Item>
                                     
                                     <Form.Item>

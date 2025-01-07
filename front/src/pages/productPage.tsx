@@ -213,7 +213,12 @@ const ProductPage = () => {
         {title: '商品id', dataIndex: 'id', key: 'id'},
         {title: '商品名称', dataIndex: 'name', key: 'name'},
         {title: '价格', dataIndex: 'price', key: 'price',sorter: (a: any, b: any) => a.price - b.price,},
-        {title: '分类', dataIndex: 'categoryId', key: 'categoryId'},
+        {title: '分类', dataIndex: 'categoryId', key: 'categoryId',
+            render: (text) => {
+                const category = categories.find((item) => item.id === text); // 查找匹配的分类
+                return category ? category.name : text; // 如果找到匹配的项，则返回名称，否则返回原始值
+              },
+        },
         {title: '商品描述', dataIndex: 'description', key: 'description'},
         {title: '库存', dataIndex: 'inventory', key: 'inventory',sorter: (a: any, b: any) => a.inventory - b.inventory},
         {title: '创建时间', dataIndex: 'createdAt', key: 'createdAt',sorter: (a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),render: (text: any) => new Date(text).toLocaleString()},//格式化时间

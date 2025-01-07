@@ -1,0 +1,9 @@
+.register-page {  
+    width: 400px;  
+    height: 100vh; /* 设置高度 */  
+    margin: 0 auto;  
+    padding: 20px;  
+    background-image: url('../assets/4b1346c5d53a65a554eebc2b8978d84b.png');  
+    background-size: cover;  
+    background-position: center;  
+}  

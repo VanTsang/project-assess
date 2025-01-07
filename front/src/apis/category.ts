@@ -51,3 +51,17 @@ export const getCategory = async (): Promise<Category[]> => {
         throw new Error('获取商品分类失败');
     }
 };
+
+// 读取分类下商品列表
+export const readCategoryProducts = async (categoryId: number) => {
+    try {
+        const res = await fetch(`${API_URL}/categories/${categoryId}`)
+        console.log("请求的url", `${API_URL}/categories/${categoryId}`);
+        
+        const data = await res.json()
+        console.log('读取分类下商品列表成功', data)
+        return data
+    } catch (error) {
+        throw new Error('读取分类下商品列表失败')
+    }
+}

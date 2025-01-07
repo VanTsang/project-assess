@@ -9,6 +9,7 @@ import ProductPage from "../pages/productPage";
 import CategoryPage from "../pages/categoryPage";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import "../index.css"
 
 const { Content, Sider } = Layout;
 
