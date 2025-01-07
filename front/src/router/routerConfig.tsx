@@ -61,8 +61,7 @@ const RouterConfig = () => {
           <Content
             style={{
               padding: 0,
-              margin: 0,
-              minHeight: 280,
+              margin: 0
             }}
           >
         <Routes>

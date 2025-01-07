@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 //定义user类型
 interface User {
+    id: number
     username: string
     email: string
     access_token: string
@@ -9,7 +10,7 @@ interface User {
 
 //定义EnrollState接口，表示认证状态
 interface EnrollState {
-    user: User | null //用户信息，包含用户名、邮箱和access_token，或为null
+    user: User | null //用户信息，包含id、用户名、邮箱和access_token，或为null
 
 }
 //定义初始状态

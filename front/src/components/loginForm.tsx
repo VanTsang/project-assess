@@ -18,6 +18,7 @@ const LoginForm = () => {
             message.success('登录成功')
             //从表单获取用户username和email
             const userData = {
+                id: value.id,
                 username: value.username,
                 email: value.email,
                 access_token: res.access_token

@@ -2,8 +2,11 @@ import React, { useEffect, useState } from'react';
 import {Table, Button, Input, Space, message, Form, Select, InputNumber, Modal} from 'antd';
 import { createProduct, readProduct, updateProduct, deleteProduct } from '../apis/product';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCategory, Category } from '../apis/category';  // 导入getCategory函数
+import { RootState } from '../store'
+import { setUser } from '../store/enrollSlice';
+import { render } from 'react-dom';
 
 const ProductPage = () => {
     const navigate = useNavigate()
@@ -19,6 +22,8 @@ const ProductPage = () => {
     
     const [searchName, setSearchName] = useState('')
     const [selectedCategory, setSelectedCategory] = useState<number | undefined>(undefined)
+
+    //const currentUser = useSelector((state: RootState) => state.enroll.user)
     
 
 
@@ -94,6 +99,7 @@ const ProductPage = () => {
             categoryId: value.categoryId,  // 选中的商品分类ID
             userId: 1
         }
+        
         try {
             await createProduct(productData)
             message.success('新增商品成功')
@@ -134,16 +140,26 @@ const ProductPage = () => {
     }
     //删除商品
     const deleteProductHandler = async (id: number) => {
-        setLoading(true)
-        try {
-            await deleteProduct(id)
-            message.success('删除商品成功')
-            getProduct()
-        } catch (error) {
-            message.error('删除商品失败')
-        } finally {
-            setLoading(false)
-        }
+        Modal.confirm({
+            title: '确认删除',
+            content: '您确认要删除该商品吗？',
+            okText: '确认',
+            cancelText: '取消',
+            onOk: async () => {
+                setLoading(true)
+                try {
+                    await deleteProduct(id)
+                    message.success('删除商品成功')
+                    getProduct()
+                } catch (error) {
+                    message.error('删除商品失败')
+                } finally {
+                    setLoading(false)
+                }
+            },
+        })
+        
+        
         
     }
 
@@ -171,6 +187,7 @@ const ProductPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            
             setLoading(true)
             try {
                 await getProduct()
@@ -184,6 +201,7 @@ const ProductPage = () => {
             }
         }
         fetchData()//调用异步函数
+    
         // getProduct()
         // const categories =getCategory()
         // setCategories(categories)
@@ -194,13 +212,12 @@ const ProductPage = () => {
     const columns = [
         {title: '商品id', dataIndex: 'id', key: 'id'},
         {title: '商品名称', dataIndex: 'name', key: 'name'},
-        {title: '价格', dataIndex: 'price', key: 'price'},
+        {title: '价格', dataIndex: 'price', key: 'price',sorter: (a: any, b: any) => a.price - b.price,},
         {title: '分类', dataIndex: 'categoryId', key: 'categoryId'},
         {title: '商品描述', dataIndex: 'description', key: 'description'},
-        {title: '库存', dataIndex: 'inventory', key: 'inventory'},
-        {title: '创建时间', dataIndex: 'createdAt', key: 'createdAt'},
-        {title: '更新时间', dataIndex: 'updatedAt', key: 'updatedAt'},
-        {title: '操作人', dataIndex: 'userId', key: 'userId'},
+        {title: '库存', dataIndex: 'inventory', key: 'inventory',sorter: (a: any, b: any) => a.inventory - b.inventory},
+        {title: '创建时间', dataIndex: 'createdAt', key: 'createdAt',sorter: (a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),render: (text: any) => new Date(text).toLocaleString()},//格式化时间
+        {title: '更新时间', dataIndex: 'updatedAt', key: 'updatedAt',sorter: (a: any, b: any) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),render: (text: any) => new Date(text).toLocaleString()},//格式化时间
         {title: '操作',
             key: 'action',
             render: (_: any, record: any) => (
@@ -243,7 +260,7 @@ const ProductPage = () => {
                     dataSource={product}
                     rowKey='id'
                     loading={loading}
-                    pagination={{ pageSize: 5 }}
+                    pagination={{ pageSize: 8 }}
                     />
 
                     <Modal

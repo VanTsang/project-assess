@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import enrollReducer from "./enrollSlice";
 
+
 //配置 Redux store
 export const store = configureStore({
     reducer: {

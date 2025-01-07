@@ -79,17 +79,25 @@ const CategoryPage = () => {
         }
         //删除商品分类
         const deleteCategoryHandler = async (id: number) => {
-            setLoading(true)
-            try {
-                await deleteCategory(id)
-                message.success('删除商品分类成功')
-                getCategory()
-            } catch (error) {
-                message.error('删除商品分类失败')
-            } finally {
-                setLoading(false)
-            }
-            
+            Modal.confirm({
+            title: '确认删除',
+            content: '您确认要删除该分类吗？',
+            okText: '确认',
+            cancelText: '取消',
+            onOk: async () => {
+                setLoading(true)
+                    try {
+                    await deleteCategory(id)
+                    message.success('删除商品分类成功')
+                    getCategory()
+                    } catch (error) {
+                    message.error('删除商品分类失败')
+                    } finally {
+                    setLoading(false)
+                    }
+                    },
+                })
+
         }
     
         //新增商品分类弹窗
@@ -121,8 +129,9 @@ const CategoryPage = () => {
             const columns = [
                 {title: '商品分类名称', dataIndex: 'name', key: 'name'},
                 {title: '商品分类id', dataIndex: 'id', key: 'id'},
-                {title: '创建时间', dataIndex: 'createdAt', key: 'createdAt'},
-                {title: '更新时间', dataIndex: 'updatedAt', key: 'updatedAt'},
+                {title: '商品分类父id', dataIndex: 'parentId', key: 'parentId'},
+                {title: '创建时间', dataIndex: 'createdAt', key: 'createdAt',sorter: (a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),render: (text: any) => new Date(text).toLocaleString()},//格式化时间
+                {title: '更新时间', dataIndex: 'updatedAt', key: 'updatedAt',sorter: (a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),render: (text: any) => new Date(text).toLocaleString()},//格式化时间
                 {title: '操作',
                     key: 'action',
                     render: (_: any, record: any) => (
@@ -143,7 +152,7 @@ const CategoryPage = () => {
                         dataSource={categories}
                         rowKey='id'
                         loading={loading}
-                        pagination={{ pageSize: 5 }}
+                        pagination={{ pageSize: 8 }}
                         />
     
                         <Modal

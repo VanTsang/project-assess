@@ -19,7 +19,7 @@ const HomePage = () => {
 
     return (
         <div className="background" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', backgroundImage: 'url(src/assets/4b1346c5d53a65a554eebc2b8978d84b.png)',backgroundSize: 'cover',backgroundPosition: 'center',height: '100vh',width: '100vw',border: 'none',margin: 0,padding: 0}}>
-            <h1>电商商品管理系统欢迎您</h1>
+            <h1 style={{fontSize: '50px'}}>电商商品管理系统欢迎您</h1>
             <Space direction='horizontal' size='middle' style={{display: 'flex', justifyContent: 'center'}}>
                 <Button type='primary' onClick={goLogin}>
                     登录
