@@ -10,8 +10,12 @@ COPY package*.json ./
 #清除缓存重新安装依赖
 RUN npm ci
 
+
 #复制所有文件到工作目录
 COPY . .
+
+#在docker容器中生成prisma客户端
+RUN npx prisma generate
 
 #暴露端口
 EXPOSE 8080
