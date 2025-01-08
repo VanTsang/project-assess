@@ -61,14 +61,33 @@ const ProductPage = () => {
 
 
 
+    //获取一个选择的分类及其所有子分类ID
+    const getAllCategoryIds = (selectedId) => {
+        const ids = new Set()
+        const findChildren = (parentId) => {
+            const children = categories.filter(cat => cat.parentId === parentId)
+            for (const child of children) {
+                ids.add(child.id)
+                findChildren(child.id)//递归查找子分类
+            }
+        }
+        //添加父类ID
+        ids.add(selectedId)
+        findChildren(selectedId)
+        return Array.from(ids)
+    }
+    
+
     //搜索商品
     const handleSearch = async () => {
         setLoading(true)
         try {
             const filteredProducts = await readProduct()
+            //获得相关的分类ID
+            const relevantCategoryIds = selectedCategory ? getAllCategoryIds(selectedCategory) : []
             const filtered = filteredProducts.filter((product: any) => 
                 (product.name.includes(searchName)) && 
-                (selectedCategory ? product.categoryId === selectedCategory : true)
+                (selectedCategory ? relevantCategoryIds.includes(product.categoryId) : true)
             )
             setProduct(filtered)
         } catch (error) {
