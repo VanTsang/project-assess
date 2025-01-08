@@ -14,36 +14,36 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  username String @unique
-  password String
-  email String @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  products Product[]//添加反向关系字段，表示用户可以拥有多个产品
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
+  password  String
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[] //添加反向关系字段，表示用户可以拥有多个产品
 }
 
 model Product {
-  id Int @id @default(autoincrement())
-  userId Int
-  name String @unique
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  name        String   @unique
   description String
-  price Float
-  inventory Int
-  categoryId Int
-  user User @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Category Category @relation(fields: [categoryId], references: [id])
+  price       Float
+  inventory   Int
+  categoryId  Int
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Category    Category @relation(fields: [categoryId], references: [id])
 }
 
 model Category {
-  id Int @id @default(autoincrement())
-  name String
-  parentId Int?
-  parent Category? @relation("CategoryParent",fields: [parentId], references: [id])
-  children Category[] @relation("CategoryParent")
-  products Product[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int        @id @default(autoincrement())
+  name      String
+  parentId  Int?
+  parent    Category?  @relation("CategoryParent", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryParent")
+  products  Product[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }

@@ -1,6 +1,7 @@
-version: '3.8'
+#version: '3.8'
 services:
 
+  #数据库服务
   postgres:
     image: postgres:13.5
     restart: always
@@ -12,5 +13,28 @@ services:
     ports:
       - '5432:5432'
 
+
+  #后端服务
+  backend:
+    image: my-client-image # 自定义的镜像名称
+    build:
+      context: .    # 构建上下文路径
+    container_name: backend-container   # 容器名称
+    restart: always   # 容器重启策略
+    environment:
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/postgres
+    ports:
+      - '3001:8080'   # 端口映射
+    depends_on:
+      - postgres   # 确保数据库先启动
+    networks:
+      - app-network   # 网络设置
+
+#数据持久化
 volumes:
   postgres:
+
+#自定义网络配置
+networks:
+   app-network:
+     driver: bridge

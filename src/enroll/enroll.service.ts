@@ -33,9 +33,9 @@ export class EnrollService {
     if (!isMatch){
       throw new Error('密码错误')
     }
-    const payload: JwtPayload = {email: user.email}//jwt载荷
+    const payload: JwtPayload = {email: user.email, userId: user.id}//jwt载荷
     const token = this.jwtService.sign(payload)//生成jwt令牌
-    return {access_token: token}
+    return {access_token: token,userId: user.id}
 
   }
 }
