@@ -21,6 +21,7 @@ const RouterConfig = () => {
 
    //获取当前用户是否登录
    const isLogin = useSelector((state: RootState) => state.enroll.user)
+   
   
    useEffect(() => {
        // 判断当前路由是否包含子路由（即判断是否是 /main 下的路径）
@@ -29,7 +30,9 @@ const RouterConfig = () => {
           // 展开菜单
           setCollapsed(true);
       } 
+      setCollapsed(true);
    },[ location ])
+  console.log(collapsed)
     return (
       
 

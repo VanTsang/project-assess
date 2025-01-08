@@ -9,6 +9,11 @@ const LoginForm = () => {
     const [loading, setLoading] = useState(false)//控制加载状态
     const navigate = useNavigate()
     const dispatch = useDispatch()
+
+    //跳转到注册页面
+    const goRegister = () => {
+        navigate('/enroll/register')
+    }
     //表单提交
     const handleLogin = async (value: any) => {
         setLoading(true)
@@ -18,7 +23,6 @@ const LoginForm = () => {
             message.success('登录成功')
             //从表单获取用户username和email
             const userData = {
-                id: value.id,
                 username: value.username,
                 email: value.email,
                 access_token: res.access_token
@@ -56,6 +60,9 @@ const LoginForm = () => {
                 <Form.Item>
                     <Button type="primary" htmlType="submit" loading={loading}>
                         登录
+                    </Button>
+                    <Button type="link" onClick={goRegister}>
+                        还未注册？点此注册
                     </Button>
                 </Form.Item>
             </Form>

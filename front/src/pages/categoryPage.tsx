@@ -4,23 +4,26 @@ import { useNavigate } from "react-router-dom";
 import { createCategory, readCategory, updateCategory, deleteCategory, readCategoryProducts } from '../apis/category';
 
 
-
 const CategoryPage = () => {
     const navigate = useNavigate();
     
     const [categories, setCategories] = useState<any[]>([]);
+    const [categories1, setCategories1] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [currentCategory, setCurrentCategory] = useState<any>(null);
     const [form] = Form.useForm();
 
+    const [searchName, setSearchName] = useState('')
+    const [selectedCategory, setSelectedCategory] = useState<number | undefined>(undefined)
+
         //获取商品分类
             const getCategory = async () => {
                 setLoading(true)
                 try {
                     const res = await readCategory()
-                    
+                    setCategories1(res)
                     setCategories(res)
                 } catch (error) {
                     console.error("获取商品分类列表失败", error);
@@ -32,7 +35,51 @@ const CategoryPage = () => {
                 
             }
 
+        //获取一个选择的分类及其所有子分类ID
+            const getAllCategoryIds = (selectedId) => {
+                const ids = new Set()
+                const findChildren = (parentId) => {
+                    const children = categories.filter(cat => cat.parentId === parentId)
+                    for (const child of children) {
+                        ids.add(child.id)
+                        findChildren(child.id)//递归查找子分类
+                    }
+                }
+                //添加父类ID
+                ids.add(selectedId)
+                findChildren(selectedId)
+                return Array.from(ids)
+            }
+            
         
+            //搜索商品分类
+            const handleSearch = async () => {
+                setLoading(true)
+                try {
+                    const filteredCategories = await readCategory()
+                    //获得相关的分类ID
+                    const relevantCategoryIds = selectedCategory ? getAllCategoryIds(selectedCategory) : []
+                    const filtered = filteredCategories.filter((category: any) => 
+                        (category.name.includes(searchName)) && 
+                        (selectedCategory !== undefined ? relevantCategoryIds.includes(category.id) : true)
+                    )
+                    setCategories(filtered)
+                } catch (error) {
+                    console.error("搜索商品分类失败", error);
+                    
+                    message.error('搜索商品分类失败')
+                } finally {
+                    setLoading(false)
+                }
+                
+            }
+        
+            //清除搜索
+            const clearSearch = () => {
+                setSearchName('')
+                setSelectedCategory(undefined)
+                getCategory()
+            }
         
         
     
@@ -167,6 +214,27 @@ const CategoryPage = () => {
             ]
             return (
                 <div className="background">
+                    <Space style={{ marginBottom: 16}}>
+                        <Input
+                            placeholder='请输入商品分类名称'
+                            value={searchName}
+                            onChange={(e) => setSearchName(e.target.value)}
+                            style={{ width: 200 }}
+                            />
+                        <Select
+                            placeholder='请选择分类'
+                            value={selectedCategory}
+                            onChange={(value) => setSelectedCategory(value)}
+                            style={{ width: 200 }}
+                            >
+                                <Select.Option value={undefined}>全部</Select.Option>
+                                {categories1.map((category) => (
+                                    <Select.Option key={category.id} value={category.id}>{category.name}</Select.Option>
+                                ))}
+                            </Select>
+                            <Button type='primary' onClick={handleSearch}>搜索</Button>
+                            <Button  onClick={clearSearch}>清除</Button>
+                    </Space>
                     <Button type='primary' onClick={CreateForm} style={{marginBottom: 16}}>
                         新增商品分类
                     </Button>

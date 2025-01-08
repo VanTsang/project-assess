@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 //定义user类型
 interface User {
-    id: number
     username: string
     email: string
     access_token: string
